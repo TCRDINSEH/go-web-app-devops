@@ -81,10 +81,12 @@ pipeline {
         }
     }
 
-    post {
-        always {
-            archiveArtifacts artifacts: 'reports/*.html', fingerprint: true
-        }
+    stage('Archive Reports') {
+    steps {
+        archiveArtifacts artifacts: 'reports/*.html', fingerprint: true
+    }
+
+
         success {
             echo "✅ Build and deployment successful!"
         }
