@@ -6,6 +6,9 @@ pipeline {
         REGISTRY = "gcr.io/applied-pager-476808-j5/${APP_NAME}"
         IMAGE_TAG = "${env.BUILD_NUMBER}"
         GCP_SERVICE_ACCOUNT = credentials('gcp-service-account-key') // Jenkins credential ID
+        GCP_PROJECT = "applied-pager-476808-j5"
+        GCP_ZONE = "us-central1-a"          // change to your cluster zone
+        GKE_CLUSTER = "gke-cluster"      // change to your cluster name
     }
 
     stages {
@@ -70,6 +73,18 @@ pipeline {
             }
         }
 
+        stage('Configure GKE Cluster') {
+            steps {
+                sh '''
+                    echo $GCP_SERVICE_ACCOUNT > sa.json
+                    gcloud auth activate-service-account --key-file=sa.json
+                    gcloud config set project ${GCP_PROJECT}
+                    gcloud config set compute/zone ${GCP_ZONE}
+                    gcloud container clusters get-credentials ${GKE_CLUSTER}
+                '''
+            }
+        }
+
         stage('Deploy to GKE via Helm') {
             steps {
                 sh '''
@@ -79,14 +94,11 @@ pipeline {
                 '''
             }
         }
-    
 
-    stage('Archive Reports') {
-    steps {
-        archiveArtifacts artifacts: 'reports/*.html', fingerprint: true
+        stage('Archive Reports') {
+            steps {
+                archiveArtifacts artifacts: 'reports/*.html', fingerprint: true
+            }
+        }
     }
-
-    }
-    
-    }   
 }
