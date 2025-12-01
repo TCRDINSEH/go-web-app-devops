@@ -79,19 +79,14 @@ pipeline {
                 '''
             }
         }
-    }
+    
 
     stage('Archive Reports') {
     steps {
         archiveArtifacts artifacts: 'reports/*.html', fingerprint: true
     }
 
-
-        success {
-            echo "✅ Build and deployment successful!"
-        }
-        failure {
-            echo "❌ Pipeline failed. Check logs."
-        }
     }
+    
+    }   
 }
