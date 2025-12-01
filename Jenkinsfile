@@ -5,7 +5,7 @@ pipeline {
         APP_NAME = "go-web-app"
         REGISTRY = "gcr.io/applied-pager-476808-j5/${APP_NAME}"
         IMAGE_TAG = "${env.BUILD_NUMBER}"
-        GCP_SERVICE_ACCOUNT = credentials('gcp-service-account') // Jenkins credential ID
+        GCP_SERVICE_ACCOUNT = credentials('gcp-service-account-key') // Jenkins credential ID
     }
 
     stages {
